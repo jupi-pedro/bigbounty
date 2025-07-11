@@ -1,15 +1,18 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
+import { Calendar, Home, Inbox, Search, Settings, LogOut } from "lucide-react"
 
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { Button } from "@/components/ui/button"
+import Image from "next/image"
+import { signOut } from "@/lib/auth/auth"
 
 // Menu items.
 const items = [
@@ -41,11 +44,23 @@ const items = [
 ]
 
 export function AppSidebar() {
+  const handleClickLogout = async () => {
+    await signOut({ redirectTo: "/" })
+  }
   return (
     <Sidebar>
       <SidebarContent>
+        <div className="pt-4 pb-1 flex justify-center">
+          <Image
+            src="/images/logo.png"
+            alt="Drone Up Logo"
+            width={150}
+            height={32}
+            priority
+          />
+        </div>
+
         <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
@@ -62,6 +77,19 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>
+        <form
+          className="w-full"
+          action={async () => {
+            "use server"
+            await signOut({ redirectTo: "/" })
+          }}
+        >
+          <Button className="w-full" type="submit" variant="outline" size="sm">
+            Log out <LogOut />
+          </Button>
+        </form>
+      </SidebarFooter>
     </Sidebar>
   )
 }
