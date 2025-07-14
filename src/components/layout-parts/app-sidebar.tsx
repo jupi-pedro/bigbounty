@@ -1,11 +1,7 @@
 "use client"
 
-import {
-  IconDeviceUnknown,
-  IconDrone,
-  IconLayoutList,
-  IconList,
-} from "@tabler/icons-react"
+import * as React from "react"
+import { Command } from "lucide-react"
 
 import { NavUser } from "@/components/layout-parts/nav-user"
 import {
@@ -19,21 +15,27 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { IconDeviceUnknown, IconDrone, IconList } from "@tabler/icons-react"
 import Link from "next/link"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="offcanvas" {...props}>
-      <SidebarHeader className="py-4">
+    <Sidebar
+      className="top-(--header-height) h-[calc(100svh-var(--header-height))]!"
+      {...props}
+    >
+      <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5"
-            >
+            <SidebarMenuButton size="lg" asChild>
               <Link href="/">
-                <IconDrone className="!size-8" />
-                <span className="text-base font-semibold">DroneUp Space</span>
+                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+                  <IconDrone className="!size-8" />
+                </div>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-medium">DroneUp Space</span>
+                  <span className="truncate text-xs">Internal</span>
+                </div>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
