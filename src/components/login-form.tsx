@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation"
 import { useActionState } from "react"
-import { authenticate } from "@/lib/actions"
+import { authenticate } from "@/lib/actions/auth"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"

@@ -52,10 +52,12 @@ export async function AppSidebar({
           <SidebarGroupContent className="flex flex-col gap-2">
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton>
-                  <IconList />
-                  <span className="font-medium">Jobs Links</span>
-                </SidebarMenuButton>
+                <Link href="/job-links">
+                  <SidebarMenuButton>
+                    <IconList />
+                    <span className="font-medium">Jobs Links</span>
+                  </SidebarMenuButton>
+                </Link>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton>
@@ -67,7 +69,9 @@ export async function AppSidebar({
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>{user && <NavUser user={user.user} />}</SidebarFooter>
+      <SidebarFooter>
+        {user && user.user && <NavUser user={user.user} />}
+      </SidebarFooter>
     </Sidebar>
   )
 }

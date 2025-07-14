@@ -1,6 +1,7 @@
 "use client"
 
 import { SidebarIcon } from "lucide-react"
+import { usePathname } from "next/navigation"
 import { SearchForm } from "@/components/layout-parts/search-form"
 import {
   Breadcrumb,
@@ -13,9 +14,14 @@ import {
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { useSidebar } from "@/components/ui/sidebar"
+import { getBreadcrumbsFromConfig } from "@/lib/utils/getBreadcrumbsFromConfig"
+import { Fragment } from "react"
 
 export function SiteHeader() {
   const { toggleSidebar } = useSidebar()
+  const pathname = usePathname()
+  const breadcrumbs = getBreadcrumbsFromConfig(pathname)
+  const last = breadcrumbs.pop()
 
   return (
     <header className="bg-background sticky top-0 z-50 flex w-full items-center border-b">
@@ -31,15 +37,21 @@ export function SiteHeader() {
         <Separator orientation="vertical" className="mr-2 h-4" />
         <Breadcrumb className="hidden sm:block">
           <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href="#">
-                Building Your Application
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-            </BreadcrumbItem>
+            {breadcrumbs.map((crumb, idx) => (
+              <Fragment key={idx}>
+                <BreadcrumbItem>
+                  <BreadcrumbLink href={crumb.href}>
+                    {crumb.label}
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+              </Fragment>
+            ))}
+            {last && (
+              <BreadcrumbItem>
+                <BreadcrumbPage>{last.label}</BreadcrumbPage>
+              </BreadcrumbItem>
+            )}
           </BreadcrumbList>
         </Breadcrumb>
         <SearchForm className="w-full sm:ml-auto sm:w-auto" />

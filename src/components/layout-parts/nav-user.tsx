@@ -1,14 +1,10 @@
 "use client"
 
 import {
-  IconCreditCard,
   IconDotsVertical,
   IconLogout,
-  IconNotification,
   IconUserCircle,
 } from "@tabler/icons-react"
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,6 +21,9 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { User } from "next-auth"
+import { Button } from "@/components/ui/button"
+import { signOut } from "@/lib/auth/auth"
+import { signOutAction } from "@/lib/actions/auth"
 
 export function NavUser({ user: { email, name } }: { user: User }) {
   const { isMobile } = useSidebar()
@@ -67,22 +66,21 @@ export function NavUser({ user: { email, name } }: { user: User }) {
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <IconUserCircle />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconCreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconNotification />
-                Notifications
+                Settings
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <IconLogout />
-              Log out
-            </DropdownMenuItem>
+            <form action={signOutAction}>
+              <DropdownMenuItem asChild>
+                <button
+                  type="submit"
+                  className="flex w-full items-center gap-2 text-sm"
+                >
+                  <IconLogout className="size-4" />
+                  Log out
+                </button>
+              </DropdownMenuItem>
+            </form>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
