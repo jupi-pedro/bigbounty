@@ -3,6 +3,7 @@ import "./globals.css"
 import AuthenticatedLayout from "@/components/layouts/authenticated-layout"
 import UnauthenticatedLayout from "@/components/layouts/unauthenticated-layout"
 import { auth } from "@/lib/auth/auth"
+import { Metadata } from "next"
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] })
 const geistMono = Geist_Mono({
@@ -10,9 +11,9 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 })
 
-export const metadata = {
-  title: "Drone Up",
-  description: "App description here",
+export const metadata: Metadata = {
+  title: "DroneUp",
+  description: "Internal tool for DroneUp Brothers.",
 }
 
 export default async function RootLayout({

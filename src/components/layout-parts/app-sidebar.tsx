@@ -1,7 +1,4 @@
-"use client"
-
 import * as React from "react"
-import { Command } from "lucide-react"
 
 import { NavUser } from "@/components/layout-parts/nav-user"
 import {
@@ -10,6 +7,7 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -17,8 +15,13 @@ import {
 } from "@/components/ui/sidebar"
 import { IconDeviceUnknown, IconDrone, IconList } from "@tabler/icons-react"
 import Link from "next/link"
+import { auth } from "@/lib/auth/auth"
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export async function AppSidebar({
+  ...props
+}: React.ComponentProps<typeof Sidebar>) {
+  const user = await auth()
+
   return (
     <Sidebar
       className="top-(--header-height) h-[calc(100svh-var(--header-height))]!"
@@ -34,7 +37,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">DroneUp Space</span>
-                  <span className="truncate text-xs">Internal</span>
+                  <span className="truncate text-xs">
+                    To infinity and beyond
+                  </span>
                 </div>
               </Link>
             </SidebarMenuButton>
@@ -43,12 +48,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
+          <SidebarGroupLabel>Getting Jobs</SidebarGroupLabel>
           <SidebarGroupContent className="flex flex-col gap-2">
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton>
                   <IconList />
-                  <span className="font-medium">Jobs</span>
+                  <span className="font-medium">Jobs Links</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
@@ -61,9 +67,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>
-        <NavUser />
-      </SidebarFooter>
+      <SidebarFooter>{user && <NavUser user={user.user} />}</SidebarFooter>
     </Sidebar>
   )
 }
