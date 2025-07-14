@@ -1,5 +1,6 @@
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import { AppSidebar } from "@/components/app-sidebar"
+import { AppSidebar } from "@/components/layout-parts/app-sidebar"
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
+import { SiteHeader } from "@/components/layout-parts/site-header"
 
 export default function AuthenticatedLayout({
   children,
@@ -8,13 +9,11 @@ export default function AuthenticatedLayout({
 }) {
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen">
-        <AppSidebar />
-        <div className="flex flex-col flex-1">
-          <SidebarTrigger />
-          <main className="p-6">{children}</main>
-        </div>
-      </div>
+      <AppSidebar />
+      <SidebarInset>
+        <SiteHeader />
+        <div className="p-6">{children}</div>
+      </SidebarInset>
     </SidebarProvider>
   )
 }
