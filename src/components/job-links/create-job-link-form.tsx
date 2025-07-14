@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
+import CompanyAutocomplete from "./company-autocomplete"
 
 const schema = z.object({
   jobTitle: z.string().min(2, "Job title is required"),
@@ -93,7 +94,7 @@ export function CreateJobLinkForm() {
             <FormItem>
               <FormLabel>Company Name</FormLabel>
               <FormControl>
-                <Input placeholder="Company" {...field} />
+                <CompanyAutocomplete field={field} />
               </FormControl>
               <FormMessage />
             </FormItem>
