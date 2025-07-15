@@ -41,6 +41,23 @@ export const columns: ColumnDef<any>[] = [
     cell: ({ row }) => {
       const jobLink = row.original
 
+      const handleDelete = async () => {
+        const confirmed = confirm(
+          "Are you sure you want to delete this job link?"
+        )
+        if (!confirmed) return
+
+        const res = await fetch(`/api/job-links/${jobLink.id}`, {
+          method: "DELETE",
+        })
+
+        if (res.ok) {
+          window.location.reload()
+        } else {
+          alert("Failed to delete job link.")
+        }
+      }
+
       return (
         <div className="flex gap-2 justify-end">
           <Link href={`/job-links/edit/${jobLink.id}`}>
@@ -48,22 +65,9 @@ export const columns: ColumnDef<any>[] = [
               <Pencil />
             </Button>
           </Link>
-          <form action={`/api/job-links/delete/${jobLink.id}`} method="post">
-            <Button
-              type="submit"
-              variant="destructive"
-              size="icon"
-              onClick={(e) => {
-                if (
-                  !confirm("Are you sure you want to delete this job link?")
-                ) {
-                  e.preventDefault()
-                }
-              }}
-            >
-              <Trash />
-            </Button>
-          </form>
+          <Button variant="destructive" size="icon" onClick={handleDelete}>
+            <Trash />
+          </Button>
         </div>
       )
     },
