@@ -1,3 +1,4 @@
+import { Role } from "@prisma/client"
 import type { NextAuthConfig } from "next-auth"
 
 const PUBLIC_ROUTES = ["/login", "/register", "/favicon.ico"]
@@ -26,6 +27,7 @@ export const authConfig = {
     async session({ session, token }) {
       if (session.user && token?.sub) {
         session.user.id = token.sub
+        session.user.role = token.role as Role
       }
       return session
     },
