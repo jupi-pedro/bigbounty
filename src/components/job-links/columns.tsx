@@ -4,8 +4,9 @@ import { ColumnDef } from "@tanstack/react-table"
 import { Pencil, Trash } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { JobLink } from "@prisma/client"
 
-export const columns: ColumnDef<any>[] = [
+export const columns: ColumnDef<JobLink>[] = [
   {
     accessorKey: "jobTitle",
     header: "Job Title",

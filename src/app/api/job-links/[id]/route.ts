@@ -3,7 +3,7 @@ import { NextResponse } from "next/server"
 
 export async function DELETE(
   _req: Request,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   const { id } = await context.params
 

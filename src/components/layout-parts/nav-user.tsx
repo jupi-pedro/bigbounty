@@ -21,8 +21,6 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { User } from "next-auth"
-import { Button } from "@/components/ui/button"
-import { signOut } from "@/lib/auth/auth"
 import { signOutAction } from "@/lib/actions/auth"
 
 export function NavUser({ user: { email, name } }: { user: User }) {

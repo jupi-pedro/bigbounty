@@ -14,15 +14,13 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import {
-  IconCirclePlusFilled,
+  IconBook,
   IconDeviceUnknown,
   IconDrone,
   IconList,
-  IconMail,
 } from "@tabler/icons-react"
 import Link from "next/link"
 import { auth } from "@/lib/auth/auth"
-import { Button } from "../ui/button"
 
 export async function AppSidebar({
   ...props
@@ -71,6 +69,22 @@ export async function AppSidebar({
                   <SidebarMenuButton>
                     <IconDeviceUnknown />
                     <span className="font-medium">Interview Questions</span>
+                  </SidebarMenuButton>
+                </Link>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>Work Related</SidebarGroupLabel>
+          <SidebarGroupContent className="flex flex-col gap-2">
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <Link href="/job-links">
+                  <SidebarMenuButton>
+                    <IconBook />
+                    <span className="font-medium">Daily Reports</span>
                   </SidebarMenuButton>
                 </Link>
               </SidebarMenuItem>

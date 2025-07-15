@@ -6,7 +6,6 @@ import { SearchForm } from "@/components/layout-parts/search-form"
 import {
   Breadcrumb,
   BreadcrumbItem,
-  BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,

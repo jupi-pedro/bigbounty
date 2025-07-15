@@ -16,7 +16,6 @@ interface CompanyAutocompleteProps {
     onChange: (value: string) => void
     onBlur: () => void
     name: string
-    ref: React.Ref<any>
   }
 }
 

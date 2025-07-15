@@ -52,7 +52,7 @@ export function CreateJobLinkForm() {
       toast.success("Job link has been created successfully")
       form.reset()
     }
-  }, [result?.success, router])
+  }, [result?.success, router, form])
 
   return (
     <Form {...form}>

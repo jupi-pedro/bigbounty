@@ -8,15 +8,7 @@ import { DatePicker } from "@/components/shared/date-picker"
 import { UserSelect } from "@/components/shared/user-select"
 import Link from "next/link"
 import { IconPlus } from "@tabler/icons-react"
-
-interface JobLink {
-  id: string
-  jobTitle: string
-  link: string
-  user: { name: string }
-  company: { name: string }
-  createdAt: string
-}
+import { JobLink } from "@prisma/client"
 
 interface User {
   id: string
