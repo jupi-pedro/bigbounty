@@ -1,4 +1,4 @@
-import { routeConfig } from "@/lib/constants/routes"
+import { routeConfig } from "@/lib/constants/routeConfig"
 
 type Breadcrumb = { href: string; label: string }
 

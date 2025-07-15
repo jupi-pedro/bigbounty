@@ -45,7 +45,7 @@ export const columns: ColumnDef<any>[] = [
         <div className="flex gap-2 justify-end">
           <Link href={`/job-links/edit/${jobLink.id}`}>
             <Button variant="outline" size="icon">
-              <Pencil className="h-4 w-4" />
+              <Pencil />
             </Button>
           </Link>
           <form action={`/api/job-links/delete/${jobLink.id}`} method="post">
@@ -61,7 +61,7 @@ export const columns: ColumnDef<any>[] = [
                 }
               }}
             >
-              <Trash className="h-4 w-4" />
+              <Trash />
             </Button>
           </form>
         </div>

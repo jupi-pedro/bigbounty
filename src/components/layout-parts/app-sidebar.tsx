@@ -80,10 +80,12 @@ export async function AppSidebar({
                 </Link>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton>
-                  <IconDeviceUnknown />
-                  <span className="font-medium">Interview Questions</span>
-                </SidebarMenuButton>
+                <Link href="/interview-questions">
+                  <SidebarMenuButton>
+                    <IconDeviceUnknown />
+                    <span className="font-medium">Interview Questions</span>
+                  </SidebarMenuButton>
+                </Link>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>

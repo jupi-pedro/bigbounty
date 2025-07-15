@@ -17,4 +17,8 @@ export const routeConfig = [
       },
     ],
   },
+  {
+    path: "/interview-questions",
+    label: "Interview Questions",
+  },
 ]
