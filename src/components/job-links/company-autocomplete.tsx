@@ -51,6 +51,10 @@ export default function CompanyAutocomplete({
     return () => clearTimeout(timeout)
   }, [input])
 
+  useEffect(() => {
+    setInput(field.value || "")
+  }, [field.value])
+
   return (
     <div className="relative" ref={containerRef}>
       <Input
@@ -62,6 +66,7 @@ export default function CompanyAutocomplete({
           setShowCommand(true)
         }}
         placeholder="Type company name..."
+        autoComplete="off"
       />
 
       {showCommand && options.length > 0 && (

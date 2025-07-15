@@ -16,6 +16,7 @@ import { Separator } from "@/components/ui/separator"
 import { useSidebar } from "@/components/ui/sidebar"
 import { getBreadcrumbsFromConfig } from "@/lib/utils/getBreadcrumbsFromConfig"
 import { Fragment } from "react"
+import Link from "next/link"
 
 export function SiteHeader() {
   const { toggleSidebar } = useSidebar()
@@ -40,9 +41,7 @@ export function SiteHeader() {
             {breadcrumbs.map((crumb, idx) => (
               <Fragment key={idx}>
                 <BreadcrumbItem>
-                  <BreadcrumbLink href={crumb.href}>
-                    {crumb.label}
-                  </BreadcrumbLink>
+                  <Link href={crumb.href}>{crumb.label}</Link>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
               </Fragment>

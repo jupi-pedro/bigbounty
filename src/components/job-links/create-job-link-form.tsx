@@ -1,7 +1,7 @@
 "use client"
 
 import { useActionState, useEffect } from "react"
-import { success, z } from "zod"
+import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { createJobLink } from "@/lib/actions/job-links"
@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 import CompanyAutocomplete from "./company-autocomplete"
 
 const schema = z.object({
@@ -48,7 +49,8 @@ export function CreateJobLinkForm() {
 
   useEffect(() => {
     if (result?.success) {
-      router.push("/job-links")
+      toast.success("Job link has been created successfully")
+      form.reset()
     }
   }, [result?.success, router])
 
@@ -62,7 +64,12 @@ export function CreateJobLinkForm() {
             <FormItem>
               <FormLabel>Job Title</FormLabel>
               <FormControl>
-                <Input placeholder="e.g. Senior React Developer" {...field} />
+                <Input
+                  placeholder="e.g. Senior React Developer"
+                  {...field}
+                  autoFocus
+                  autoComplete="off"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -80,6 +87,7 @@ export function CreateJobLinkForm() {
                   type="url"
                   placeholder="https://example.com/job"
                   {...field}
+                  autoComplete="off"
                 />
               </FormControl>
               <FormMessage />
@@ -119,9 +127,11 @@ export function CreateJobLinkForm() {
           )}
         />
 
-        <Button type="submit" disabled={isPending}>
-          {isPending ? "Creating..." : "Create Job Link"}
-        </Button>
+        <div className="flex justify-end">
+          <Button type="submit" disabled={isPending}>
+            {isPending ? "Creating..." : "Create Job Link"}
+          </Button>
+        </div>
 
         {result && result.message && (
           <p className="text-sm text-red-500">{result.message}</p>

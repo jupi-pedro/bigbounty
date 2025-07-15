@@ -4,6 +4,7 @@ import AuthenticatedLayout from "@/components/layouts/authenticated-layout"
 import UnauthenticatedLayout from "@/components/layouts/unauthenticated-layout"
 import { auth } from "@/lib/auth/auth"
 import { Metadata } from "next"
+import { Toaster } from "@/components/ui/sonner"
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] })
 const geistMono = Geist_Mono({
@@ -33,6 +34,7 @@ export default async function RootLayout({
         ) : (
           <UnauthenticatedLayout>{children}</UnauthenticatedLayout>
         )}
+        <Toaster position="top-center" />
       </body>
     </html>
   )
