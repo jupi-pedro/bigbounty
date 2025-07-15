@@ -109,6 +109,12 @@ export function CreateJobLinkForm() {
           )}
         />
 
+        <div className="flex justify-end">
+          <Button type="submit" disabled={isPending}>
+            {isPending ? "Creating..." : "Create Job Link"}
+          </Button>
+        </div>
+
         <FormField
           control={form.control}
           name="description"
@@ -126,12 +132,6 @@ export function CreateJobLinkForm() {
             </FormItem>
           )}
         />
-
-        <div className="flex justify-end">
-          <Button type="submit" disabled={isPending}>
-            {isPending ? "Creating..." : "Create Job Link"}
-          </Button>
-        </div>
 
         {result && result.message && (
           <p className="text-sm text-red-500">{result.message}</p>
