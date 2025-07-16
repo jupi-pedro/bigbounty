@@ -9,12 +9,12 @@ export async function GET(req: Request) {
   const date = searchParams.get("date")
   const userId = searchParams.get("userId")
 
-  const where: Prisma.JobLinkWhereInput = {}
+  const where: Prisma.DailyReportWhereInput = {}
 
   if (date) {
     const start = new Date(`${date}T00:00:00.000Z`)
     const end = new Date(`${date}T23:59:59.999Z`)
-    where.createdAt = {
+    where.date = {
       gte: start,
       lte: end,
     }
@@ -25,14 +25,14 @@ export async function GET(req: Request) {
   }
 
   const [data, total] = await Promise.all([
-    prisma.jobLink.findMany({
+    prisma.dailyReport.findMany({
       skip: (page - 1) * pageSize,
       take: pageSize,
       where,
-      include: { company: true, user: true },
-      orderBy: { createdAt: "asc" },
+      include: { user: true },
+      orderBy: { date: "desc" },
     }),
-    prisma.jobLink.count({ where }),
+    prisma.dailyReport.count({ where }),
   ])
 
   return NextResponse.json({ data, total })

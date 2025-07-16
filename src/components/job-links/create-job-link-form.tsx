@@ -30,8 +30,6 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>
 
 export function CreateJobLinkForm() {
-  const router = useRouter()
-
   const [result, formAction, isPending] = useActionState(
     createJobLink,
     undefined
@@ -52,7 +50,7 @@ export function CreateJobLinkForm() {
       toast.success("Job link has been created successfully")
       form.reset()
     }
-  }, [result?.success, router, form])
+  }, [result?.success, form])
 
   return (
     <Form {...form}>

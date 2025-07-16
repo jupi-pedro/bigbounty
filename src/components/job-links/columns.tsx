@@ -61,11 +61,11 @@ export const columns: ColumnDef<JobLink>[] = [
 
       return (
         <div className="flex gap-2 justify-end">
-          <Link href={`/job-links/edit/${jobLink.id}`}>
+          {/* <Link href={`/job-links/edit/${jobLink.id}`}>
             <Button variant="outline" size="icon">
               <Pencil />
             </Button>
-          </Link>
+          </Link> */}
           <Button variant="destructive" size="icon" onClick={handleDelete}>
             <Trash />
           </Button>

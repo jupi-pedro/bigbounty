@@ -18,6 +18,20 @@ export const routeConfig = [
     ],
   },
   {
+    path: "/daily-reports",
+    label: "Daily Reports",
+    children: [
+      {
+        path: "/daily-reports/create",
+        label: "Create Daily Report",
+      },
+      {
+        path: "/daily-reports/:id",
+        label: "Edit Daily Report",
+      },
+    ],
+  },
+  {
     path: "/interview-questions",
     label: "Interview Questions",
   },

@@ -25,6 +25,7 @@ model User {
   role          Role      @default(Developer)
 
   jobLinks JobLink[]
+  dailyReports DailyReport[]
 }
 
 model JobLink {
@@ -50,4 +51,19 @@ model Company {
   updatedAt DateTime @updatedAt
 
   jobLinks JobLink[]
+}
+
+model DailyReport {
+  id      String   @id @default(cuid())
+
+  userId  String
+  user    User     @relation(fields: [userId], references: [id])
+
+  date    DateTime
+  content String   @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, date]) // Ensures only one report per user per date
 }

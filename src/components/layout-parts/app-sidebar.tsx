@@ -81,7 +81,7 @@ export async function AppSidebar({
           <SidebarGroupContent className="flex flex-col gap-2">
             <SidebarMenu>
               <SidebarMenuItem>
-                <Link href="/job-links">
+                <Link href="/daily-reports">
                   <SidebarMenuButton>
                     <IconBook />
                     <span className="font-medium">Daily Reports</span>
