@@ -4,9 +4,11 @@ import { Role } from "@prisma/client"
 import { ReactNode } from "react"
 import { Forbidden } from "@/components/forbidden"
 
-type ComponentWithPermission<Props = {}> = (props: Props) => Promise<ReactNode>
+type ComponentWithPermission<Props = unknown> = (
+  props: Props
+) => Promise<ReactNode>
 
-export function withPermission<Props = {}>(
+export function withPermission<Props = unknown>(
   required: Permission,
   Component: ComponentWithPermission<Props>
 ) {

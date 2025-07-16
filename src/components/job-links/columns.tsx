@@ -1,10 +1,10 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { Pencil, Trash } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { JobLink } from "@prisma/client"
+import { IconTrash } from "@tabler/icons-react"
 
 export const columns: ColumnDef<JobLink>[] = [
   {
@@ -67,7 +67,7 @@ export const columns: ColumnDef<JobLink>[] = [
             </Button>
           </Link> */}
           <Button variant="destructive" size="icon" onClick={handleDelete}>
-            <Trash />
+            <IconTrash />
           </Button>
         </div>
       )

@@ -1,6 +1,5 @@
 import { auth } from "@/lib/auth/auth"
 import { prisma } from "@/lib/prisma"
-import { JobLinksTable } from "@/components/job-links/job-links-table"
 import { DailyReportsTable } from "@/components/daily-reports/daily-reports-table"
 
 export default async function DailyReportsPage() {
