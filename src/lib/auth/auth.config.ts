@@ -1,5 +1,6 @@
 import { Role } from "@prisma/client"
 import type { NextAuthConfig } from "next-auth"
+import { prisma } from "../prisma"
 
 const PUBLIC_ROUTES = ["/login", "/register", "/favicon.ico"]
 
@@ -22,6 +23,16 @@ export const authConfig = {
         return Response.redirect(new URL("/", nextUrl))
       }
       return true
+    },
+    async jwt({ token }) {
+      if (!token.role && token.sub) {
+        const userInDb = await prisma.user.findUnique({
+          where: { id: token.sub },
+          select: { role: true },
+        })
+        token.role = userInDb?.role
+      }
+      return token
     },
 
     async session({ session, token }) {

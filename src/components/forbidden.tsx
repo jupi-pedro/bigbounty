@@ -1,0 +1,9 @@
+export const Forbidden = () => {
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <h1 className="text-xl font-bold text-destructive">
+        You are not allowed to visit this page
+      </h1>
+    </div>
+  )
+}
