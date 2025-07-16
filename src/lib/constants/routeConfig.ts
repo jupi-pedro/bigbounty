@@ -12,7 +12,7 @@ export const routeConfig = [
         label: "Create Job Link",
       },
       {
-        path: "/job-links/:id",
+        path: "/job-links/edit/:id",
         label: "Edit Job Link",
       },
     ],
@@ -26,7 +26,7 @@ export const routeConfig = [
         label: "Create Daily Report",
       },
       {
-        path: "/daily-reports/:id",
+        path: "/daily-reports/edit/:id",
         label: "Edit Daily Report",
       },
     ],
