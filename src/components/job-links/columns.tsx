@@ -22,8 +22,9 @@ export const columns: ColumnDef<JobLink>[] = [
   {
     accessorKey: "company.name",
     header: "Company",
-    cell: ({ row }) => {
-      const company: string = row.getValue("company.name")
+    cell: ({ getValue }) => {
+      const company: string = getValue() as string
+
       return (
         <div className="max-w-[300px] truncate" title={company}>
           {company}
