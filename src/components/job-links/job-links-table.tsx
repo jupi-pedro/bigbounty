@@ -8,7 +8,8 @@ import { DatePicker } from "@/components/shared/date-picker"
 import { UserSelect } from "@/components/shared/user-select"
 import Link from "next/link"
 import { IconPlus } from "@tabler/icons-react"
-import { JobLink } from "@prisma/client"
+import { JobLink, Role } from "@prisma/client"
+import { useCurrentUser } from "@/lib/contexts/user-context"
 
 interface User {
   id: string
@@ -17,17 +18,17 @@ interface User {
 
 interface Props {
   users: User[]
-  currentUserId?: string
 }
 
-export function JobLinksTable({ users, currentUserId }: Props) {
+export function JobLinksTable({ users }: Props) {
+  const currentUser = useCurrentUser()
   const [data, setData] = useState<JobLink[]>([])
   const [total, setTotal] = useState(0)
   const [page, setPage] = useState(1)
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
     () => new Date()
   )
-  const [userId, setUserId] = useState<string | undefined>(() => currentUserId)
+  const [userId, setUserId] = useState<string | undefined>()
   const pageSize = 50
 
   useEffect(() => {
@@ -48,6 +49,10 @@ export function JobLinksTable({ users, currentUserId }: Props) {
 
     fetchData()
   }, [page, selectedDate, userId])
+
+  useEffect(() => {
+    setUserId(currentUser.role === Role.Developer ? currentUser.id : undefined)
+  }, [currentUser])
 
   return (
     <div className="space-y-4">
