@@ -10,6 +10,7 @@ import Link from "next/link"
 import { IconPlus } from "@tabler/icons-react"
 import { JobLink, Role } from "@prisma/client"
 import { useCurrentUser } from "@/lib/contexts/user-context"
+import { Checkbox } from "@/components/ui/checkbox"
 
 interface User {
   id: string
@@ -29,6 +30,9 @@ export function JobLinksTable({ users }: Props) {
     () => new Date()
   )
   const [userId, setUserId] = useState<string | undefined>()
+  const [avoidDuplicates, setAvoidDuplicates] = useState(
+    currentUser.role === Role.Viewer
+  )
   const pageSize = 50
 
   useEffect(() => {
@@ -40,7 +44,9 @@ export function JobLinksTable({ users }: Props) {
       const res = await fetch(
         `/api/job-links?page=${page}&pageSize=${pageSize}${
           dateParam ? `&date=${dateParam}` : ""
-        }${userId ? `&userId=${userId}` : ""}`
+        }${userId ? `&userId=${userId}` : ""}${
+          avoidDuplicates ? "&avoidDuplicates=true" : ""
+        }`
       )
       const json = await res.json()
       setData(json.data)
@@ -48,18 +54,32 @@ export function JobLinksTable({ users }: Props) {
     }
 
     fetchData()
-  }, [page, selectedDate, userId])
+  }, [page, selectedDate, userId, avoidDuplicates])
 
   useEffect(() => {
     setUserId(currentUser.role === Role.Developer ? currentUser.id : undefined)
+    setAvoidDuplicates(currentUser.role === Role.Viewer)
   }, [currentUser])
 
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row justify-between items-end sm:items-center gap-4">
-        <div className="flex gap-2 flex-col sm:flex-row">
+        <div className="flex gap-2 flex-col sm:flex-row items-center">
           <DatePicker date={selectedDate} setDate={setSelectedDate} />
           <UserSelect users={users} userId={userId} setUserId={setUserId} />
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="avoid-duplicates"
+              checked={avoidDuplicates}
+              onCheckedChange={(checked) => setAvoidDuplicates(!!checked)}
+            />
+            <label
+              htmlFor="avoid-duplicates"
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              Hide duplicate jobs
+            </label>
+          </div>
         </div>
         <Link href="/job-links/create">
           <Button size="sm">

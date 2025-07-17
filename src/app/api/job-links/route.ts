@@ -12,6 +12,7 @@ export const GET = withApiPermission(
     const pageSize = parseInt(searchParams.get("pageSize") || "10")
     const date = searchParams.get("date")
     const userId = searchParams.get("userId")
+    const avoidDuplicates = searchParams.get("avoidDuplicates") === "true"
 
     const where: Prisma.JobLinkWhereInput = {}
 
@@ -28,16 +29,42 @@ export const GET = withApiPermission(
       where.userId = userId
     }
 
-    const [data, total] = await Promise.all([
-      prisma.jobLink.findMany({
-        skip: (page - 1) * pageSize,
-        take: pageSize,
+    let data, total
+
+    if (avoidDuplicates) {
+      // Get all job links with company info
+      const allJobLinks = await prisma.jobLink.findMany({
         where,
         include: { company: true, user: true, jobLinkSource: true },
         orderBy: { createdAt: "asc" },
-      }),
-      prisma.jobLink.count({ where }),
-    ])
+      })
+
+      // Group by normalized job title and company name to avoid duplicates
+      const uniqueJobs = new Map<string, typeof allJobLinks[0]>()
+      
+      allJobLinks.forEach(job => {
+        const key = `${job.jobTitle.trim().toLowerCase()}_${job.company.name.trim().toLowerCase()}`
+        if (!uniqueJobs.has(key)) {
+          uniqueJobs.set(key, job)
+        }
+      })
+
+      // Convert back to array and paginate
+      const uniqueJobsArray = Array.from(uniqueJobs.values())
+      total = uniqueJobsArray.length
+      data = uniqueJobsArray.slice((page - 1) * pageSize, page * pageSize)
+    } else {
+      [data, total] = await Promise.all([
+        prisma.jobLink.findMany({
+          skip: (page - 1) * pageSize,
+          take: pageSize,
+          where,
+          include: { company: true, user: true, jobLinkSource: true },
+          orderBy: { createdAt: "asc" },
+        }),
+        prisma.jobLink.count({ where }),
+      ])
+    }
 
     return NextResponse.json({ data, total })
   }
