@@ -5,6 +5,8 @@ import { revalidatePath } from "next/cache"
 import { auth } from "@/lib/auth/auth"
 import { BadRequestError, ForbiddenError } from "@/lib/errors"
 import { ActionResult } from "@/types/actionResult"
+import { hasPermission, Permission } from "@/lib/utils/permissions"
+import { getCurrentUser } from "@/lib/current-user"
 
 export async function createDailyReport(
   _prevState: ActionResult | undefined,
@@ -71,6 +73,8 @@ export async function editDailyReport(
     const session = await auth()
     if (!session?.user?.id) throw new ForbiddenError("You must be logged in.")
 
+    const currentUser = await getCurrentUser()
+
     const id = formData.get("id") as string
     const dateStr = formData.get("date") as string
     const content = formData.get("content") as string
@@ -88,6 +92,14 @@ export async function editDailyReport(
 
     if (!existing) {
       throw new BadRequestError("Daily report not found.")
+    }
+
+    if (
+      currentUser &&
+      !hasPermission(currentUser.role, Permission.ManageOtherDailyReports) &&
+      existing.userId !== currentUser.id
+    ) {
+      throw new ForbiddenError("You can only edit your own reports.")
     }
 
     const conflict = await prisma.dailyReport.findUnique({

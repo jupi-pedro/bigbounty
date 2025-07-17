@@ -1,18 +1,14 @@
 import { auth } from "@/lib/auth/auth"
 import { prisma } from "@/lib/prisma"
-import { User } from "@prisma/client"
+import { cache } from "react"
 
-let cachedUser: User | null = null
-
-export async function getCurrentUser() {
-  if (cachedUser) return cachedUser
-
+export const getCurrentUser = cache(async () => {
   const session = await auth()
   if (!session?.user?.id) return null
 
-  cachedUser = await prisma.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: { id: session.user.id },
   })
 
-  return cachedUser
-}
+  return user
+})

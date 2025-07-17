@@ -9,25 +9,29 @@ import { UserSelect } from "@/components/shared/user-select"
 import Link from "next/link"
 import { IconPlus } from "@tabler/icons-react"
 import { DailyReport } from "@prisma/client"
+import { useCurrentUser } from "@/lib/contexts/user-context"
+import { hasPermission, Permission } from "@/lib/utils/permissions"
 
 interface User {
   id: string
   name: string
 }
 
-interface Props {
-  users: User[]
-  currentUserId?: string
+type DailyReportWithUser = DailyReport & {
+  user: { name: string }
 }
 
-export function DailyReportsTable({ users, currentUserId }: Props) {
-  const [data, setData] = useState<DailyReport[]>([])
+interface Props {
+  users: User[]
+}
+
+export function DailyReportsTable({ users }: Props) {
+  const currentUser = useCurrentUser()
+  const [data, setData] = useState<DailyReportWithUser[]>([])
   const [total, setTotal] = useState(0)
   const [page, setPage] = useState(1)
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
-    () => new Date()
-  )
-  const [userId, setUserId] = useState<string | undefined>(() => currentUserId)
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
+  const [userId, setUserId] = useState<string | undefined>(undefined)
   const pageSize = 50
 
   useEffect(() => {
@@ -54,7 +58,12 @@ export function DailyReportsTable({ users, currentUserId }: Props) {
       <div className="flex flex-col sm:flex-row justify-between items-end sm:items-center gap-4">
         <div className="flex gap-2 flex-col sm:flex-row">
           <DatePicker date={selectedDate} setDate={setSelectedDate} />
-          <UserSelect users={users} userId={userId} setUserId={setUserId} />
+          {hasPermission(
+            currentUser.role,
+            Permission.ManageOtherDailyReports
+          ) && (
+            <UserSelect users={users} userId={userId} setUserId={setUserId} />
+          )}
         </div>
         <Link href="/daily-reports/create">
           <Button size="sm">
@@ -64,7 +73,7 @@ export function DailyReportsTable({ users, currentUserId }: Props) {
         </Link>
       </div>
 
-      <DataTable columns={columns} data={data} />
+      <DataTable columns={columns(currentUser)} data={data} />
 
       <div className="flex justify-end items-center gap-2 mt-4">
         <Button

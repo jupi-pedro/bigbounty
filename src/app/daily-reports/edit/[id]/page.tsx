@@ -1,6 +1,9 @@
 import { notFound } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import { EditDailyReportForm } from "@/components/daily-reports/edit-daily-report-form"
+import { getCurrentUser } from "@/lib/current-user"
+import { hasPermission, Permission } from "@/lib/utils/permissions"
+import { Forbidden } from "@/components/forbidden"
 
 export default async function EditDailyReportPage({
   params,
@@ -15,6 +18,18 @@ export default async function EditDailyReportPage({
 
   if (!dailyReport) {
     return notFound()
+  }
+
+  const currentUser = await getCurrentUser()
+  
+  // Check if user can edit this report
+  const canEdit = currentUser && (
+    hasPermission(currentUser.role, Permission.ManageOtherDailyReports) ||
+    dailyReport.userId === currentUser.id
+  )
+
+  if (!canEdit) {
+    return <Forbidden />
   }
 
   return (

@@ -2,11 +2,16 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
-import { DailyReport } from "@prisma/client"
+import { DailyReport, User } from "@prisma/client"
 import Link from "next/link"
 import { IconPencil, IconTrash } from "@tabler/icons-react"
+import { hasPermission, Permission } from "@/lib/utils/permissions"
 
-export const columns: ColumnDef<DailyReport>[] = [
+type DailyReportWithUser = DailyReport & {
+  user: { name: string }
+}
+
+export const columns = (currentUser: User): ColumnDef<DailyReportWithUser>[] => [
   {
     accessorKey: "date",
     header: "Date",
@@ -25,6 +30,10 @@ export const columns: ColumnDef<DailyReport>[] = [
     cell: ({ row }) => {
       const report = row.original
 
+      // Check if user can edit/delete this report
+      const canEdit = hasPermission(currentUser.role, Permission.ManageOtherDailyReports) ||
+                     report.userId === currentUser.id
+
       const handleDelete = async () => {
         const confirmed = confirm(
           "Are you sure you want to delete this daily report?"
@@ -38,9 +47,12 @@ export const columns: ColumnDef<DailyReport>[] = [
         if (res.ok) {
           window.location.reload()
         } else {
-          alert("Failed to delete daily report.")
+          const data = await res.json()
+          alert(data.error || "Failed to delete daily report.")
         }
       }
+
+      if (!canEdit) return null
 
       return (
         <div className="flex gap-2 justify-end">
