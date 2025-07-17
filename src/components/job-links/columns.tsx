@@ -29,7 +29,7 @@ export const columns: ColumnDef<JobLink>[] = [
           href={link}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block max-w-[500px] truncate text-blue-600 underline"
+          className="inline-block max-w-[500px] truncate text-blue-600 visited:text-purple-600"
         >
           {link}
         </Link>
