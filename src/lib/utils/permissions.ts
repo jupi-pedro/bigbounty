@@ -13,6 +13,10 @@ export enum Permission {
   EditDailyReport,
   DeleteDailyReport,
   ManageOtherDailyReports,
+  ListUsers,
+  CreateUser,
+  EditUser,
+  DeleteUser,
 }
 
 export const rolePermissions: Record<Role, Permission[]> = {

@@ -20,10 +20,26 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { User } from "next-auth"
+import { User, Role } from "@prisma/client"
 import { signOutAction } from "@/lib/actions/auth"
+import { Badge } from "@/components/ui/badge"
 
-export function NavUser({ user: { email, name } }: { user: User }) {
+function getRoleVariant(role: Role) {
+  switch (role) {
+    case Role.Administrator:
+      return "destructive"
+    case Role.Moderator:
+      return "default"
+    case Role.Developer:
+      return "secondary"
+    case Role.Viewer:
+      return "outline"
+    default:
+      return "secondary"
+  }
+}
+
+export function NavUser({ user: { email, name, role } }: { user: User }) {
   const { isMobile } = useSidebar()
 
   return (
@@ -36,7 +52,12 @@ export function NavUser({ user: { email, name } }: { user: User }) {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{name}</span>
+                <div className="flex items-center gap-2">
+                  <span className="truncate font-medium">{name}</span>
+                  <Badge variant={getRoleVariant(role)} className="text-xs">
+                    {role}
+                  </Badge>
+                </div>
                 <span className="text-muted-foreground truncate text-xs">
                   {email}
                 </span>
@@ -53,7 +74,12 @@ export function NavUser({ user: { email, name } }: { user: User }) {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{name}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="truncate font-medium">{name}</span>
+                    <Badge variant={getRoleVariant(role)} className="text-xs">
+                      {role}
+                    </Badge>
+                  </div>
                   <span className="text-muted-foreground truncate text-xs">
                     {email}
                   </span>

@@ -18,14 +18,16 @@ import {
   IconDeviceUnknown,
   IconDrone,
   IconList,
+  IconUsers,
 } from "@tabler/icons-react"
 import Link from "next/link"
-import { auth } from "@/lib/auth/auth"
+import { getCurrentUser } from "@/lib/current-user"
+import { hasPermission, Permission } from "@/lib/utils/permissions"
 
 export async function AppSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
-  const user = await auth()
+  const currentUser = await getCurrentUser()
 
   return (
     <Sidebar
@@ -91,9 +93,28 @@ export async function AppSidebar({
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        {currentUser &&
+          hasPermission(currentUser.role, Permission.ListUsers) && (
+            <SidebarGroup>
+              <SidebarGroupLabel>Management</SidebarGroupLabel>
+              <SidebarGroupContent className="flex flex-col gap-2">
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <Link href="/users">
+                      <SidebarMenuButton>
+                        <IconUsers />
+                        <span className="font-medium">Users</span>
+                      </SidebarMenuButton>
+                    </Link>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          )}
       </SidebarContent>
       <SidebarFooter>
-        {user && user.user && <NavUser user={user.user} />}
+        {currentUser && <NavUser user={currentUser} />}
       </SidebarFooter>
     </Sidebar>
   )
