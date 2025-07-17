@@ -33,7 +33,7 @@ export const GET = withApiPermission(
         skip: (page - 1) * pageSize,
         take: pageSize,
         where,
-        include: { company: true, user: true },
+        include: { company: true, user: true, jobLinkSource: true },
         orderBy: { createdAt: "asc" },
       }),
       prisma.jobLink.count({ where }),

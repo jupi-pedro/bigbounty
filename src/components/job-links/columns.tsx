@@ -16,6 +16,10 @@ export const columns: ColumnDef<JobLink>[] = [
     header: "Company",
   },
   {
+    accessorKey: "jobLinkSource.name",
+    header: "Source",
+  },
+  {
     accessorKey: "link",
     header: "Link",
     cell: ({ row }) => {

@@ -19,6 +19,7 @@ export async function createJobLink(
     const jobTitle = formData.get("jobTitle") as string
     const link = formData.get("link") as string
     const companyName = formData.get("company") as string
+    const sourceName = formData.get("source") as string
     const description = formData.get("description") as string | null
 
     if (!jobTitle || !link || !companyName) {
@@ -31,6 +32,12 @@ export async function createJobLink(
       create: { name: companyName },
     })
 
+    const source = await prisma.jobLinkSource.upsert({
+      where: { name: sourceName },
+      update: {},
+      create: { name: sourceName },
+    })
+
     await prisma.jobLink.create({
       data: {
         jobTitle,
@@ -38,6 +45,7 @@ export async function createJobLink(
         description,
         userId,
         companyId: company.id,
+        jobLinkSourceId: source.id,
       },
     })
 

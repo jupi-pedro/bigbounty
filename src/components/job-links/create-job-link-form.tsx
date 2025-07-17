@@ -18,11 +18,13 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import CompanyAutocomplete from "./company-autocomplete"
+import JobLinkSourceAutocomplete from "./job-link-source-autocomplete"
 
 const schema = z.object({
   jobTitle: z.string().min(2, "Job title is required"),
   link: z.string().url("Enter a valid URL"),
   company: z.string().min(1, "Company name is required"),
+  source: z.string().min(1, "Source name is required"),
   description: z.string().optional(),
 })
 
@@ -40,6 +42,7 @@ export function CreateJobLinkForm() {
       jobTitle: "",
       link: "",
       company: "",
+      source: "",
       description: "",
     },
   })
@@ -100,6 +103,20 @@ export function CreateJobLinkForm() {
               <FormLabel>Company Name</FormLabel>
               <FormControl>
                 <CompanyAutocomplete field={field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="source"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Source</FormLabel>
+              <FormControl>
+                <JobLinkSourceAutocomplete field={field} />
               </FormControl>
               <FormMessage />
             </FormItem>
