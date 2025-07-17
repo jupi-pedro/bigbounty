@@ -50,7 +50,7 @@ export function CreateJobLinkForm() {
   useEffect(() => {
     if (result?.success) {
       toast.success("Job link has been created successfully")
-      form.reset()
+      location.reload()
     }
   }, [result?.success, form])
 
