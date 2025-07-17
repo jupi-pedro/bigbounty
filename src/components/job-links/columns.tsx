@@ -10,10 +10,26 @@ export const columns: ColumnDef<JobLink>[] = [
   {
     accessorKey: "jobTitle",
     header: "Job Title",
+    cell: ({ row }) => {
+      const jobTitle: string = row.getValue("jobTitle")
+      return (
+        <div className="max-w-[300px] truncate" title={jobTitle}>
+          {jobTitle}
+        </div>
+      )
+    },
   },
   {
     accessorKey: "company.name",
     header: "Company",
+    cell: ({ row }) => {
+      const company: string = row.getValue("company.name")
+      return (
+        <div className="max-w-[300px] truncate" title={company}>
+          {company}
+        </div>
+      )
+    },
   },
   {
     accessorKey: "jobLinkSource.name",
@@ -29,7 +45,7 @@ export const columns: ColumnDef<JobLink>[] = [
           href={link}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block max-w-[500px] truncate text-blue-600 visited:text-purple-600"
+          className="inline-block max-w-[400px] truncate text-blue-600 visited:text-purple-600"
         >
           {link}
         </Link>
