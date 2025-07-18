@@ -26,6 +26,7 @@ model User {
 
   jobLinks JobLink[]
   dailyReports DailyReport[]
+  sessions UserSession[]
 }
 
 model JobLink {
@@ -78,4 +79,19 @@ model DailyReport {
   updatedAt DateTime @updatedAt
 
   @@unique([userId, date]) // Ensures only one report per user per date
+}
+
+model UserSession {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  
+  ipAddress  String
+  userAgent  String   @db.Text
+  lastActive DateTime @default(now())
+  expiresAt  DateTime
+  isActive   Boolean  @default(true)
+  
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }

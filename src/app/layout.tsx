@@ -5,6 +5,7 @@ import UnauthenticatedLayout from "@/components/layouts/unauthenticated-layout"
 import { auth } from "@/lib/auth/auth"
 import { Metadata } from "next"
 import { Toaster } from "@/components/ui/sonner"
+import { Providers } from "@/components/providers"
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] })
 const geistMono = Geist_Mono({
@@ -29,12 +30,14 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {isLoggedIn ? (
-          <AuthenticatedLayout>{children}</AuthenticatedLayout>
-        ) : (
-          <UnauthenticatedLayout>{children}</UnauthenticatedLayout>
-        )}
-        <Toaster position="top-center" />
+        <Providers>
+          {isLoggedIn ? (
+            <AuthenticatedLayout>{children}</AuthenticatedLayout>
+          ) : (
+            <UnauthenticatedLayout>{children}</UnauthenticatedLayout>
+          )}
+          <Toaster position="top-center" />
+        </Providers>
       </body>
     </html>
   )

@@ -3,6 +3,7 @@
 import { ReactNode } from "react"
 import { User } from "@prisma/client"
 import { UserContext } from "@/lib/contexts/user-context"
+import { useSessionTracker } from "@/hooks/use-session-tracker"
 
 export function UserProvider({
   user,
@@ -11,5 +12,7 @@ export function UserProvider({
   user: User
   children: ReactNode
 }) {
+  useSessionTracker()
+  
   return <UserContext.Provider value={user}>{children}</UserContext.Provider>
 }
