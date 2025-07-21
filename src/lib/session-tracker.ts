@@ -3,7 +3,7 @@
 import { prisma } from "@/lib/prisma"
 import { headers } from "next/headers"
 
-export async function trackUserSession(userId: string) {
+export async function trackUserSession(userId: string, sessionId: string) {
   const headersList = await headers()
   const ipAddress =
     headersList.get("x-forwarded-for") ||
@@ -17,21 +17,20 @@ export async function trackUserSession(userId: string) {
   // Set session to expire in 24 hours
   const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000)
 
-  // Check if there's an existing active session for this user/ip/agent combination
-  const existingSession = await prisma.userSession.findFirst({
+  // Check if there's an existing session with this sessionId
+  const existingSession = await prisma.userSession.findUnique({
     where: {
-      userId,
-      ipAddress: cleanIpAddress,
-      userAgent,
-      isActive: true,
+      sessionId,
     },
   })
 
   if (existingSession) {
-    // Update existing session
+    // Update existing session (including potentially new IP address)
     await prisma.userSession.update({
-      where: { id: existingSession.id },
+      where: { sessionId },
       data: {
+        ipAddress: cleanIpAddress,
+        userAgent,
         lastActive: new Date(),
         expiresAt,
       },
@@ -40,6 +39,7 @@ export async function trackUserSession(userId: string) {
     // Create new session
     await prisma.userSession.create({
       data: {
+        sessionId,
         userId,
         ipAddress: cleanIpAddress,
         userAgent,
@@ -56,9 +56,12 @@ export async function deactivateUserSession(
   sessionId?: string
 ) {
   if (sessionId) {
-    // Deactivate specific session
-    await prisma.userSession.update({
-      where: { id: sessionId },
+    // Deactivate specific session by sessionId
+    await prisma.userSession.updateMany({
+      where: { 
+        sessionId,
+        userId 
+      },
       data: { isActive: false },
     })
   } else {

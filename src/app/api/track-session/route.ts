@@ -6,11 +6,11 @@ export async function POST() {
   try {
     const session = await auth()
     
-    if (!session?.user?.id) {
+    if (!session?.user?.id || !session?.sessionId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    await trackUserSession(session.user.id)
+    await trackUserSession(session.user.id, session.sessionId)
     
     return NextResponse.json({ success: true })
   } catch (error) {

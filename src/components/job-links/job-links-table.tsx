@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { columns } from "./columns"
 import { DataTable } from "@/components/shared/data-table"
 import { Button } from "@/components/ui/button"
@@ -11,6 +11,7 @@ import { IconPlus } from "@tabler/icons-react"
 import { JobLink, Role } from "@prisma/client"
 import { useCurrentUser } from "@/lib/contexts/user-context"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Input } from "@/components/ui/input"
 
 interface User {
   id: string
@@ -33,6 +34,9 @@ export function JobLinksTable({ users }: Props) {
   const [avoidDuplicates, setAvoidDuplicates] = useState(
     currentUser.role === Role.Viewer
   )
+  const [searchQuery, setSearchQuery] = useState("")
+  const [searchInput, setSearchInput] = useState("")
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
   const pageSize = 50
 
   useEffect(() => {
@@ -46,7 +50,7 @@ export function JobLinksTable({ users }: Props) {
           dateParam ? `&date=${dateParam}` : ""
         }${userId ? `&userId=${userId}` : ""}${
           avoidDuplicates ? "&avoidDuplicates=true" : ""
-        }`
+        }${searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : ""}`
       )
       const json = await res.json()
       setData(json.data)
@@ -54,12 +58,32 @@ export function JobLinksTable({ users }: Props) {
     }
 
     fetchData()
-  }, [page, selectedDate, userId, avoidDuplicates])
+  }, [page, selectedDate, userId, avoidDuplicates, searchQuery])
 
   useEffect(() => {
     setUserId(currentUser.role === Role.Developer ? currentUser.id : undefined)
     setAvoidDuplicates(currentUser.role === Role.Viewer)
   }, [currentUser])
+
+  useEffect(() => {
+    setPage(1)
+  }, [searchQuery])
+
+  useEffect(() => {
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current)
+    }
+
+    debounceTimerRef.current = setTimeout(() => {
+      setSearchQuery(searchInput)
+    }, 500)
+
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current)
+      }
+    }
+  }, [searchInput])
 
   return (
     <div className="space-y-4">
@@ -67,6 +91,13 @@ export function JobLinksTable({ users }: Props) {
         <div className="flex gap-2 flex-col sm:flex-row items-center">
           <DatePicker date={selectedDate} setDate={setSelectedDate} />
           <UserSelect users={users} userId={userId} setUserId={setUserId} />
+          <Input
+            type="text"
+            placeholder="Search job title or company..."
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            className="w-64"
+          />
           <div className="flex items-center space-x-2">
             <Checkbox
               id="avoid-duplicates"

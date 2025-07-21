@@ -15,5 +15,13 @@ declare module "next-auth" {
       image?: string | null
       role: "Administrator" | "Moderator" | "Viewer" | "Developer"
     }
+    sessionId: string
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    role?: "Administrator" | "Moderator" | "Viewer" | "Developer"
+    sessionId?: string
   }
 }

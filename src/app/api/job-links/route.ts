@@ -13,6 +13,7 @@ export const GET = withApiPermission(
     const date = searchParams.get("date")
     const userId = searchParams.get("userId")
     const avoidDuplicates = searchParams.get("avoidDuplicates") === "true"
+    const searchQuery = searchParams.get("search")
 
     const where: Prisma.JobLinkWhereInput = {}
 
@@ -27,6 +28,13 @@ export const GET = withApiPermission(
 
     if (userId) {
       where.userId = userId
+    }
+
+    if (searchQuery) {
+      where.OR = [
+        { jobTitle: { contains: searchQuery, mode: "insensitive" } },
+        { company: { name: { contains: searchQuery, mode: "insensitive" } } }
+      ]
     }
 
     let data, total

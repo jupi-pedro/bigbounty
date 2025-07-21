@@ -20,9 +20,7 @@ export function UserSessionsTable() {
   const fetchData = async () => {
     setLoading(true)
     try {
-      const res = await fetch(
-        `/api/user-sessions?active=${showActiveOnly}`
-      )
+      const res = await fetch(`/api/user-sessions?active=${showActiveOnly}`)
       const sessions = await res.json()
       setData(sessions)
     } catch (error) {
@@ -34,6 +32,7 @@ export function UserSessionsTable() {
 
   useEffect(() => {
     fetchData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showActiveOnly])
 
   return (
@@ -66,7 +65,7 @@ export function UserSessionsTable() {
       </div>
 
       <DataTable columns={columns} data={data} />
-      
+
       <div className="text-sm text-muted-foreground">
         Showing {data.length} session{data.length !== 1 ? "s" : ""}
       </div>

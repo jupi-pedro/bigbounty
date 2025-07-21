@@ -18,6 +18,7 @@ import {
   IconDeviceUnknown,
   IconDrone,
   IconList,
+  IconLock,
   IconUsers,
 } from "@tabler/icons-react"
 import Link from "next/link"
@@ -105,6 +106,14 @@ export async function AppSidebar({
                       <SidebarMenuButton>
                         <IconUsers />
                         <span className="font-medium">Users</span>
+                      </SidebarMenuButton>
+                    </Link>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <Link href="/user-sessions">
+                      <SidebarMenuButton>
+                        <IconLock />
+                        <span className="font-medium">User Sessions</span>
                       </SidebarMenuButton>
                     </Link>
                   </SidebarMenuItem>
