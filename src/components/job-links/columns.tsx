@@ -8,6 +8,13 @@ import { IconTrash } from "@tabler/icons-react"
 
 export const columns: ColumnDef<JobLink>[] = [
   {
+    id: "index",
+    header: "#",
+    cell: ({ row }) => {
+      return <div className="w-8">{row.index + 1}</div>
+    },
+  },
+  {
     accessorKey: "jobTitle",
     header: "Job Title",
     cell: ({ row }) => {
@@ -56,6 +63,21 @@ export const columns: ColumnDef<JobLink>[] = [
   {
     accessorKey: "user.name",
     header: "Creator",
+  },
+  {
+    accessorKey: "createdAt",
+    header: "Created At",
+    cell: ({ row }) => {
+      const date = new Date(row.getValue("createdAt"))
+      const options: Intl.DateTimeFormatOptions = {
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      }
+      return date.toLocaleString('en-US', options).replace(',', '')
+    },
   },
   {
     id: "actions",
