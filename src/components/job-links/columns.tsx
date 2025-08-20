@@ -53,7 +53,7 @@ export const columns: ColumnDef<JobLink>[] = [
           href={link}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block max-w-[400px] truncate text-blue-600 visited:text-purple-600"
+          className="inline-block max-w-[300px] truncate text-blue-600 visited:text-purple-600"
         >
           {link}
         </Link>
@@ -70,13 +70,13 @@ export const columns: ColumnDef<JobLink>[] = [
     cell: ({ row }) => {
       const date = new Date(row.getValue("createdAt"))
       const options: Intl.DateTimeFormatOptions = {
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
       }
-      return date.toLocaleString('en-US', options).replace(',', '')
+      return date.toLocaleString("en-US", options).replace(",", "")
     },
   },
   {
