@@ -98,3 +98,33 @@ model UserSession {
   
   @@index([sessionId])
 }
+
+model InterviewProcess {
+  id             String   @id @default(cuid())
+  jobTitle       String
+  company        String
+  identity       String
+  person         String
+  jobDescription String?  @db.Text
+  status         String   @default("In Progress") // In Progress, Offered, Declined
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  
+  interviewSteps InterviewStep[]
+}
+
+model InterviewStep {
+  id                  String   @id @default(cuid())
+  type                String   // Assessment, Phone Call, Video Call
+  title               String
+  date                DateTime @db.Date
+  interviewerName     String?
+  note                String?  @db.Text
+  
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  
+  interviewProcessId  String
+  interviewProcess    InterviewProcess @relation(fields: [interviewProcessId], references: [id], onDelete: Cascade)
+}

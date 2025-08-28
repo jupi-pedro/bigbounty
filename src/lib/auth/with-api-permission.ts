@@ -9,14 +9,15 @@ type ApiHandler<TContext = unknown> = (
 ) => Promise<Response>
 
 export function withApiPermission<TContext = unknown>(
-  permission: Permission,
+  permission: Permission | Permission[],
   handler: ApiHandler<TContext>
 ): ApiHandler<TContext> {
   return async (req, context) => {
     const user = await getCurrentUser()
     const role = user?.role as Role | undefined
 
-    const allowed = role && hasPermission(role, permission)
+    const permissions = Array.isArray(permission) ? permission : [permission]
+    const allowed = role && permissions.some(p => hasPermission(role, p))
 
     if (!allowed) {
       return new NextResponse("Forbidden", { status: 403 })

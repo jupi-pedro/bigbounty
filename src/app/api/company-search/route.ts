@@ -4,7 +4,7 @@ import { Permission } from "@/lib/utils/permissions"
 import { NextResponse } from "next/server"
 
 export const GET = withApiPermission(
-  Permission.ListJobLinks,
+  [Permission.ListJobLinks, Permission.ListInterviewProcesses],
   async (req: Request) => {
     const { searchParams } = new URL(req.url)
     const q = searchParams.get("q") || ""

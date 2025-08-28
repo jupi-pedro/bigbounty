@@ -20,6 +20,7 @@ import {
   IconList,
   IconLock,
   IconUsers,
+  IconUserCheck,
 } from "@tabler/icons-react"
 import Link from "next/link"
 import { getCurrentUser } from "@/lib/current-user"
@@ -72,6 +73,14 @@ export async function AppSidebar({
                   <SidebarMenuButton>
                     <IconDeviceUnknown />
                     <span className="font-medium">Interview Questions</span>
+                  </SidebarMenuButton>
+                </Link>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <Link href="/interview-processes">
+                  <SidebarMenuButton>
+                    <IconUserCheck />
+                    <span className="font-medium">Interview Process</span>
                   </SidebarMenuButton>
                 </Link>
               </SidebarMenuItem>

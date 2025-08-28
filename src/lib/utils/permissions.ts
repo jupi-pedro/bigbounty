@@ -17,6 +17,14 @@ export enum Permission {
   CreateUser,
   EditUser,
   DeleteUser,
+  ListInterviewProcesses,
+  CreateInterviewProcess,
+  EditInterviewProcess,
+  DeleteInterviewProcess,
+  ListInterviewSteps,
+  CreateInterviewStep,
+  EditInterviewStep,
+  DeleteInterviewStep,
 }
 
 export const rolePermissions: Record<Role, Permission[]> = {
@@ -37,8 +45,16 @@ export const rolePermissions: Record<Role, Permission[]> = {
     Permission.CreateDailyReport,
     Permission.EditDailyReport,
     Permission.DeleteDailyReport,
+    Permission.ListInterviewProcesses,
+    Permission.CreateInterviewProcess,
+    Permission.EditInterviewProcess,
+    Permission.DeleteInterviewProcess,
+    Permission.ListInterviewSteps,
+    Permission.CreateInterviewStep,
+    Permission.EditInterviewStep,
+    Permission.DeleteInterviewStep,
   ],
-  [Role.Viewer]: [Permission.ViewDashboard, Permission.ListJobLinks],
+  [Role.Viewer]: [Permission.ViewDashboard, Permission.ListJobLinks, Permission.ListInterviewProcesses, Permission.ListInterviewSteps],
 }
 
 export function hasPermission(role: Role, permission: Permission): boolean {
