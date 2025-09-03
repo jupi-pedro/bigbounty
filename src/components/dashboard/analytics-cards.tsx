@@ -28,41 +28,44 @@ async function getJobLinksData() {
     include: { company: true },
   })
 
-  // Count total jobs
-  const totalJobsToday = jobsToday.length
-
   // Count unique jobs (by job title and company name)
   const uniqueJobs = new Map<string, boolean>()
-  jobsToday.forEach(job => {
-    const key = `${job.jobTitle.trim().toLowerCase()}_${job.company.name.trim().toLowerCase()}`
+  jobsToday.forEach((job) => {
+    const key = `${job.jobTitle.trim().toLowerCase()}_${job.company.name
+      .trim()
+      .toLowerCase()}`
     uniqueJobs.set(key, true)
   })
   const uniqueJobsToday = uniqueJobs.size
 
-  // Calculate proposals (total × 3)
-  const proposalsToday = totalJobsToday * 3
+  // Count interviews in progress
+  const interviewsInProgress = await prisma.interviewProcess.count({
+    where: {
+      status: "In Progress",
+    },
+  })
 
   return {
-    proposalsToday,
+    interviewsInProgress,
     uniqueJobsToday,
   }
 }
 
 export async function AnalyticsCards() {
-  const { proposalsToday, uniqueJobsToday } = await getJobLinksData()
+  const { interviewsInProgress, uniqueJobsToday } = await getJobLinksData()
 
   return (
     <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Today&apos;s Proposals</CardDescription>
+          <CardDescription>Interviews in Progress</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {proposalsToday}
+            {interviewsInProgress}
           </CardTitle>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Total proposals sent today
+            Active interview processes
             <IconTrendingUp />
           </div>
         </CardFooter>
