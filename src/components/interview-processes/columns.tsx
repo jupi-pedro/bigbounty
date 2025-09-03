@@ -113,35 +113,45 @@ export const columns: ColumnDef<InterviewProcess>[] = [
         )
       }
 
-      const upcomingSteps = steps.filter(step => {
-        const stepDate = new Date(step.date)
+      const getTimeSinceLastStep = () => {
+        const sortedSteps = [...steps].sort((a, b) => {
+          return new Date(b.date).getTime() - new Date(a.date).getTime()
+        })
+        
+        const lastStep = sortedSteps[0]
+        const lastStepDate = new Date(lastStep.date)
         const today = new Date()
-        today.setHours(0, 0, 0, 0)
-        return stepDate >= today
-      })
-
-      const pastSteps = steps.filter(step => {
-        const stepDate = new Date(step.date)
-        const today = new Date()
-        today.setHours(0, 0, 0, 0)
-        return stepDate < today
-      })
+        
+        // Reset time for accurate day calculation
+        const lastStepDateOnly = new Date(lastStepDate.getFullYear(), lastStepDate.getMonth(), lastStepDate.getDate())
+        const todayDateOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+        
+        const diffTime = todayDateOnly.getTime() - lastStepDateOnly.getTime()
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
+        
+        if (diffDays === 0) {
+          return "today"
+        } else if (diffDays === 1) {
+          return "yesterday"
+        } else if (diffDays < 7) {
+          return `${diffDays} days ago`
+        } else if (diffDays < 30) {
+          const weeks = Math.floor(diffDays / 7)
+          return weeks === 1 ? "1 week ago" : `${weeks} weeks ago`
+        } else {
+          const months = Math.floor(diffDays / 30)
+          return months === 1 ? "1 month ago" : `${months} months ago`
+        }
+      }
 
       return (
         <div className="text-sm">
           <div className="font-medium text-gray-900">
             {steps.length} step{steps.length !== 1 ? 's' : ''}
           </div>
-          {upcomingSteps.length > 0 && (
-            <div className="text-blue-600">
-              {upcomingSteps.length} upcoming
-            </div>
-          )}
-          {pastSteps.length > 0 && (
-            <div className="text-gray-500">
-              {pastSteps.length} completed
-            </div>
-          )}
+          <div className="text-gray-500">
+            {getTimeSinceLastStep()}
+          </div>
         </div>
       )
     },
