@@ -122,11 +122,18 @@ export const columns: ColumnDef<InterviewProcess>[] = [
         const lastStepDate = new Date(lastStep.date)
         const today = new Date()
         
-        // Reset time for accurate day calculation
-        const lastStepDateOnly = new Date(lastStepDate.getFullYear(), lastStepDate.getMonth(), lastStepDate.getDate())
-        const todayDateOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+        // Convert both dates to local timezone midnight for accurate day comparison
+        // This ensures UTC dates from the database are compared correctly with local time
+        const getLocalMidnight = (date: Date) => {
+          const localDate = new Date(date.toLocaleString())
+          localDate.setHours(0, 0, 0, 0)
+          return localDate
+        }
         
-        const diffTime = todayDateOnly.getTime() - lastStepDateOnly.getTime()
+        const lastStepLocalMidnight = getLocalMidnight(lastStepDate)
+        const todayLocalMidnight = getLocalMidnight(today)
+        
+        const diffTime = todayLocalMidnight.getTime() - lastStepLocalMidnight.getTime()
         const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
         
         if (diffDays === 0) {
