@@ -119,26 +119,29 @@ export const columns: ColumnDef<InterviewProcess>[] = [
         })
         
         const lastStep = sortedSteps[0]
-        const lastStepDate = new Date(lastStep.date)
-        const today = new Date()
+        const lastStepDateStr = String(lastStep.date)
         
-        // Convert both dates to local timezone midnight for accurate day comparison
-        // This ensures UTC dates from the database are compared correctly with local time
-        const getLocalMidnight = (date: Date) => {
-          const localDate = new Date(date.toLocaleString())
-          localDate.setHours(0, 0, 0, 0)
-          return localDate
+        // Simple string-based comparison for YYYY-MM-DD dates
+        const today = new Date()
+        const todayStr = today.getFullYear() + '-' + 
+                        String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                        String(today.getDate()).padStart(2, '0')
+        
+        // Extract just the date part if it includes time
+        const lastDateOnly = lastStepDateStr.split('T')[0]
+        
+        if (lastDateOnly === todayStr) {
+          return "today"
         }
         
-        const lastStepLocalMidnight = getLocalMidnight(lastStepDate)
-        const todayLocalMidnight = getLocalMidnight(today)
+        // For other cases, calculate the difference
+        const lastDate = new Date(lastDateOnly + 'T12:00:00')  // Use noon to avoid timezone issues
+        const todayDate = new Date(todayStr + 'T12:00:00')
         
-        const diffTime = todayLocalMidnight.getTime() - lastStepLocalMidnight.getTime()
-        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
+        const diffTime = todayDate.getTime() - lastDate.getTime()
+        const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24))
         
-        if (diffDays === 0) {
-          return "today"
-        } else if (diffDays === 1) {
+        if (diffDays === 1) {
           return "yesterday"
         } else if (diffDays < 7) {
           return `${diffDays} days ago`
