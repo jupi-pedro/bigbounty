@@ -23,21 +23,36 @@ export const GET = withApiPermission(
       ]
     }
 
-    const [data, total] = await Promise.all([
+    // First get all matching records with their interview steps
+    const [allData, total] = await Promise.all([
       prisma.interviewProcess.findMany({
-        skip: (page - 1) * pageSize,
-        take: pageSize,
         where,
         include: {
           interviewSteps: {
             orderBy: { date: "asc" },
           },
         },
-        orderBy: { createdAt: "desc" },
       }),
       prisma.interviewProcess.count({ where }),
     ])
 
-    return NextResponse.json({ data, total })
+    // Sort by latest interview step date (descending)
+    const sortedData = allData.sort((a, b) => {
+      // Get the latest step date for each process
+      const aLatestStep = a.interviewSteps.length > 0 
+        ? new Date(a.interviewSteps[a.interviewSteps.length - 1].date).getTime()
+        : new Date(a.createdAt).getTime() // Fallback to createdAt if no steps
+      
+      const bLatestStep = b.interviewSteps.length > 0
+        ? new Date(b.interviewSteps[b.interviewSteps.length - 1].date).getTime()
+        : new Date(b.createdAt).getTime() // Fallback to createdAt if no steps
+      
+      return bLatestStep - aLatestStep // Descending order
+    })
+
+    // Apply pagination after sorting
+    const paginatedData = sortedData.slice((page - 1) * pageSize, page * pageSize)
+
+    return NextResponse.json({ data: paginatedData, total })
   }
 )
