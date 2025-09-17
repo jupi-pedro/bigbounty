@@ -11,6 +11,7 @@ export const GET = withApiPermission(
     const page = parseInt(searchParams.get("page") || "1")
     const pageSize = parseInt(searchParams.get("pageSize") || "10")
     const searchQuery = searchParams.get("search")
+    const statusFilter = searchParams.get("status")
 
     const where: Prisma.InterviewProcessWhereInput = {}
 
@@ -21,6 +22,10 @@ export const GET = withApiPermission(
         { identity: { contains: searchQuery, mode: "insensitive" } },
         { person: { contains: searchQuery, mode: "insensitive" } }
       ]
+    }
+
+    if (statusFilter) {
+      where.status = statusFilter
     }
 
     // First get all matching records with their interview steps

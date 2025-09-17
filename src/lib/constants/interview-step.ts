@@ -8,6 +8,7 @@ export enum InterviewProcessStatus {
   InProgress = "In Progress",
   Offered = "Offered",
   Declined = "Declined",
+  Withdrawn = "Withdrawn",
 }
 
 export const interviewStepTypes = [
@@ -20,4 +21,5 @@ export const interviewProcessStatuses = [
   { value: InterviewProcessStatus.InProgress, label: "In Progress" },
   { value: InterviewProcessStatus.Offered, label: "Offered" },
   { value: InterviewProcessStatus.Declined, label: "Declined" },
+  { value: InterviewProcessStatus.Withdrawn, label: "Withdrawn" },
 ]

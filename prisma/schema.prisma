@@ -106,7 +106,7 @@ model InterviewProcess {
   identity       String
   person         String
   jobDescription String?  @db.Text
-  status         String   @default("In Progress") // In Progress, Offered, Declined
+  status         String   @default("In Progress") // In Progress, Offered, Declined, Withdrawn
   
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt

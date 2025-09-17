@@ -8,6 +8,14 @@ import Link from "next/link"
 import { IconPlus } from "@tabler/icons-react"
 import { InterviewProcess } from "@prisma/client"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { interviewProcessStatuses } from "@/lib/constants/interview-step"
 
 export function InterviewProcessesTable() {
   const [data, setData] = useState<InterviewProcess[]>([])
@@ -15,6 +23,7 @@ export function InterviewProcessesTable() {
   const [page, setPage] = useState(1)
   const [searchQuery, setSearchQuery] = useState("")
   const [searchInput, setSearchInput] = useState("")
+  const [statusFilter, setStatusFilter] = useState("In Progress")
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
   const pageSize = 50
 
@@ -23,7 +32,7 @@ export function InterviewProcessesTable() {
       const res = await fetch(
         `/api/interview-processes?page=${page}&pageSize=${pageSize}${
           searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : ""
-        }`
+        }${statusFilter && statusFilter !== "all" ? `&status=${encodeURIComponent(statusFilter)}` : ""}`
       )
       const json = await res.json()
       setData(json.data)
@@ -31,11 +40,11 @@ export function InterviewProcessesTable() {
     }
 
     fetchData()
-  }, [page, searchQuery])
+  }, [page, searchQuery, statusFilter])
 
   useEffect(() => {
     setPage(1)
-  }, [searchQuery])
+  }, [searchQuery, statusFilter])
 
   useEffect(() => {
     if (debounceTimerRef.current) {
@@ -64,6 +73,19 @@ export function InterviewProcessesTable() {
             onChange={(e) => setSearchInput(e.target.value)}
             className="w-96"
           />
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-48">
+              <SelectValue placeholder="Filter by status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Statuses</SelectItem>
+              {interviewProcessStatuses.map((status) => (
+                <SelectItem key={status.value} value={status.value}>
+                  {status.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <Link href="/interview-processes/create">
           <Button size="sm">
