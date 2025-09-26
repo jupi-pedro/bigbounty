@@ -44,15 +44,21 @@ export const GET = withApiPermission(
     // Sort by latest interview step date (descending)
     const sortedData = allData.sort((a, b) => {
       // Get the latest step date for each process
-      const aLatestStep = a.interviewSteps.length > 0 
+      const aLatestStep = a.interviewSteps.length > 0
         ? new Date(a.interviewSteps[a.interviewSteps.length - 1].date).getTime()
-        : new Date(a.createdAt).getTime() // Fallback to createdAt if no steps
-      
+        : 0 // Processes without steps go to the bottom
+
       const bLatestStep = b.interviewSteps.length > 0
         ? new Date(b.interviewSteps[b.interviewSteps.length - 1].date).getTime()
-        : new Date(b.createdAt).getTime() // Fallback to createdAt if no steps
-      
-      return bLatestStep - aLatestStep // Descending order
+        : 0 // Processes without steps go to the bottom
+
+      // Primary sort by latest step date
+      if (aLatestStep !== bLatestStep) {
+        return bLatestStep - aLatestStep // Descending order
+      }
+
+      // Secondary sort by createdAt for stable ordering
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     })
 
     // Apply pagination after sorting

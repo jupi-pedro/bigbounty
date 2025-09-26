@@ -35,7 +35,9 @@ const schema = z.object({
   identity: z.string().min(1, "Identity is required"),
   person: z.string().min(1, "Person name is required"),
   jobDescription: z.string().optional(),
+  interviewDetails: z.string().optional(),
   status: z.string().min(1, "Status is required"),
+  expectedSteps: z.string().optional(),
 })
 
 type FormData = z.infer<typeof schema>
@@ -64,7 +66,9 @@ export function InterviewProcessForm({ interviewProcess, mode }: InterviewProces
       identity: interviewProcess?.identity || "",
       person: interviewProcess?.person || "",
       jobDescription: interviewProcess?.jobDescription || "",
+      interviewDetails: interviewProcess?.interviewDetails || "",
       status: interviewProcess?.status || "In Progress",
+      expectedSteps: interviewProcess?.expectedSteps?.toString() || "",
     },
   })
 
@@ -186,6 +190,26 @@ export function InterviewProcessForm({ interviewProcess, mode }: InterviewProces
 
         <FormField
           control={form.control}
+          name="expectedSteps"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Expected Steps (optional)</FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  min="1"
+                  placeholder="e.g. 4"
+                  {...field}
+                  autoComplete="off"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
           name="jobDescription"
           render={({ field }) => (
             <FormItem>
@@ -194,6 +218,24 @@ export function InterviewProcessForm({ interviewProcess, mode }: InterviewProces
                 <Textarea
                   rows={8}
                   placeholder="Enter the full job description..."
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="interviewDetails"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Interview Details (optional)</FormLabel>
+              <FormControl>
+                <Textarea
+                  rows={6}
+                  placeholder="Enter interview details, notes, or requirements..."
                   {...field}
                 />
               </FormControl>

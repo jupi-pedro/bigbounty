@@ -2,12 +2,16 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
-import { InterviewProcess } from "@prisma/client"
+import { InterviewProcess, InterviewStep } from "@prisma/client"
 import { IconPencil, IconTrash } from "@tabler/icons-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 
-export const columns: ColumnDef<InterviewProcess>[] = [
+type InterviewProcessWithSteps = InterviewProcess & {
+  interviewSteps: InterviewStep[]
+}
+
+export const columns: ColumnDef<InterviewProcessWithSteps>[] = [
   {
     id: "index",
     header: "#",
@@ -106,7 +110,8 @@ export const columns: ColumnDef<InterviewProcess>[] = [
         type: string;
         title: string;
       }>
-      
+      const expectedSteps = row.original.expectedSteps
+
       if (!steps || steps.length === 0) {
         return (
           <div className="text-gray-400 text-sm">
@@ -119,30 +124,30 @@ export const columns: ColumnDef<InterviewProcess>[] = [
         const sortedSteps = [...steps].sort((a, b) => {
           return new Date(b.date).getTime() - new Date(a.date).getTime()
         })
-        
+
         const lastStep = sortedSteps[0]
         const lastStepDateStr = String(lastStep.date)
-        
+
         // Simple string-based comparison for YYYY-MM-DD dates
         const today = new Date()
-        const todayStr = today.getFullYear() + '-' + 
-                        String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+        const todayStr = today.getFullYear() + '-' +
+                        String(today.getMonth() + 1).padStart(2, '0') + '-' +
                         String(today.getDate()).padStart(2, '0')
-        
+
         // Extract just the date part if it includes time
         const lastDateOnly = lastStepDateStr.split('T')[0]
-        
+
         if (lastDateOnly === todayStr) {
           return "today"
         }
-        
+
         // For other cases, calculate the difference
         const lastDate = new Date(lastDateOnly + 'T12:00:00')  // Use noon to avoid timezone issues
         const todayDate = new Date(todayStr + 'T12:00:00')
-        
+
         const diffTime = todayDate.getTime() - lastDate.getTime()
         const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24))
-        
+
         if (diffDays === 1) {
           return "yesterday"
         } else if (diffDays < 7) {
@@ -159,7 +164,10 @@ export const columns: ColumnDef<InterviewProcess>[] = [
       return (
         <div className="text-sm">
           <div className="font-medium text-gray-900">
-            {steps.length} step{steps.length !== 1 ? 's' : ''}
+            {expectedSteps != null
+              ? `${steps.length}/${expectedSteps} step${expectedSteps !== 1 ? 's' : ''}`
+              : `${steps.length} step${steps.length !== 1 ? 's' : ''}`
+            }
           </div>
           <div className="text-gray-500">
             {getTimeSinceLastStep()}

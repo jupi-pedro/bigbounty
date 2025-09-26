@@ -29,8 +29,15 @@ export async function createInterviewProcess(
     const company = formData.get("company") as string
     const identity = formData.get("identity") as string
     const person = formData.get("person") as string
-    const jobDescription = formData.get("jobDescription") as string | null
+    const jobDescriptionRaw = formData.get("jobDescription") as string | null
+    const interviewDetailsRaw = formData.get("interviewDetails") as string | null
     const status = formData.get("status") as string
+    const expectedStepsStr = formData.get("expectedSteps") as string | null
+
+    // Convert empty strings to null for optional text fields
+    const jobDescription = jobDescriptionRaw === "" ? null : jobDescriptionRaw
+    const interviewDetails = interviewDetailsRaw === "" ? null : interviewDetailsRaw
+    const expectedSteps = expectedStepsStr && expectedStepsStr !== "" ? parseInt(expectedStepsStr, 10) : null
 
     if (!jobTitle || !company || !identity || !person || !status) {
       throw new BadRequestError("All required fields must be filled.")
@@ -43,7 +50,9 @@ export async function createInterviewProcess(
         identity,
         person,
         jobDescription,
+        interviewDetails,
         status,
+        expectedSteps,
       },
     })
 
@@ -91,8 +100,15 @@ export async function updateInterviewProcess(
     const company = formData.get("company") as string
     const identity = formData.get("identity") as string
     const person = formData.get("person") as string
-    const jobDescription = formData.get("jobDescription") as string | null
+    const jobDescriptionRaw = formData.get("jobDescription") as string | null
+    const interviewDetailsRaw = formData.get("interviewDetails") as string | null
     const status = formData.get("status") as string
+    const expectedStepsStr = formData.get("expectedSteps") as string | null
+
+    // Convert empty strings to null for optional text fields
+    const jobDescription = jobDescriptionRaw === "" ? null : jobDescriptionRaw
+    const interviewDetails = interviewDetailsRaw === "" ? null : interviewDetailsRaw
+    const expectedSteps = expectedStepsStr && expectedStepsStr !== "" ? parseInt(expectedStepsStr, 10) : null
 
     if (!jobTitle || !company || !identity || !person || !status) {
       throw new BadRequestError("All required fields must be filled.")
@@ -106,7 +122,9 @@ export async function updateInterviewProcess(
         identity,
         person,
         jobDescription,
+        interviewDetails,
         status,
+        expectedSteps,
       },
     })
 

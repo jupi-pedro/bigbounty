@@ -105,12 +105,14 @@ model InterviewProcess {
   company        String
   identity       String
   person         String
-  jobDescription String?  @db.Text
-  status         String   @default("In Progress") // In Progress, Offered, Declined, Withdrawn
-  
+  jobDescription   String?  @db.Text
+  interviewDetails String?  @db.Text
+  status           String   @default("In Progress") // In Progress, Offered, Declined, Withdrawn
+  expectedSteps    Int?     // Expected number of interview steps (nullable)
+
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
-  
+
   interviewSteps InterviewStep[]
 }
 

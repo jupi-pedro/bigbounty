@@ -6,7 +6,7 @@ import { DataTable } from "@/components/shared/data-table"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { IconPlus } from "@tabler/icons-react"
-import { InterviewProcess } from "@prisma/client"
+import { InterviewProcess, InterviewStep } from "@prisma/client"
 import { Input } from "@/components/ui/input"
 import {
   Select,
@@ -17,8 +17,12 @@ import {
 } from "@/components/ui/select"
 import { interviewProcessStatuses } from "@/lib/constants/interview-step"
 
+type InterviewProcessWithSteps = InterviewProcess & {
+  interviewSteps: InterviewStep[]
+}
+
 export function InterviewProcessesTable() {
-  const [data, setData] = useState<InterviewProcess[]>([])
+  const [data, setData] = useState<InterviewProcessWithSteps[]>([])
   const [total, setTotal] = useState(0)
   const [page, setPage] = useState(1)
   const [searchQuery, setSearchQuery] = useState("")
