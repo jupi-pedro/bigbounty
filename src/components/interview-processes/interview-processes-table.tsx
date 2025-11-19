@@ -5,7 +5,7 @@ import { columns } from "./columns"
 import { DataTable } from "@/components/shared/data-table"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { IconPlus } from "@tabler/icons-react"
+import { IconPlus, IconChevronDown } from "@tabler/icons-react"
 import { InterviewProcess, InterviewStep } from "@prisma/client"
 import { Input } from "@/components/ui/input"
 import {
@@ -15,6 +15,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { Checkbox } from "@/components/ui/checkbox"
 import { interviewProcessStatuses } from "@/lib/constants/interview-step"
 
 type InterviewProcessWithSteps = InterviewProcess & {
@@ -28,15 +34,34 @@ export function InterviewProcessesTable() {
   const [searchQuery, setSearchQuery] = useState("")
   const [searchInput, setSearchInput] = useState("")
   const [statusFilter, setStatusFilter] = useState("In Progress")
+  const [identityFilter, setIdentityFilter] = useState<string[]>([])
+  const [availableIdentities, setAvailableIdentities] = useState<string[]>([])
+  const [identityPopoverOpen, setIdentityPopoverOpen] = useState(false)
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
   const pageSize = 50
 
   useEffect(() => {
+    const fetchIdentities = async () => {
+      const res = await fetch('/api/interview-processes/identities')
+      if (res.ok) {
+        const identities = await res.json()
+        setAvailableIdentities(identities)
+      }
+    }
+
+    fetchIdentities()
+  }, [])
+
+  useEffect(() => {
     const fetchData = async () => {
+      const identityParam = identityFilter.length > 0
+        ? `&identity=${identityFilter.map(encodeURIComponent).join(',')}`
+        : ""
+
       const res = await fetch(
         `/api/interview-processes?page=${page}&pageSize=${pageSize}${
           searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : ""
-        }${statusFilter && statusFilter !== "all" ? `&status=${encodeURIComponent(statusFilter)}` : ""}`
+        }${statusFilter && statusFilter !== "all" ? `&status=${encodeURIComponent(statusFilter)}` : ""}${identityParam}`
       )
       const json = await res.json()
       setData(json.data)
@@ -44,11 +69,11 @@ export function InterviewProcessesTable() {
     }
 
     fetchData()
-  }, [page, searchQuery, statusFilter])
+  }, [page, searchQuery, statusFilter, identityFilter])
 
   useEffect(() => {
     setPage(1)
-  }, [searchQuery, statusFilter])
+  }, [searchQuery, statusFilter, identityFilter])
 
   useEffect(() => {
     if (debounceTimerRef.current) {
@@ -65,6 +90,18 @@ export function InterviewProcessesTable() {
       }
     }
   }, [searchInput])
+
+  const handleIdentityToggle = (identity: string) => {
+    setIdentityFilter(prev =>
+      prev.includes(identity)
+        ? prev.filter(i => i !== identity)
+        : [...prev, identity]
+    )
+  }
+
+  const clearIdentityFilter = () => {
+    setIdentityFilter([])
+  }
 
   return (
     <div className="space-y-4">
@@ -90,6 +127,53 @@ export function InterviewProcessesTable() {
               ))}
             </SelectContent>
           </Select>
+          <Popover open={identityPopoverOpen} onOpenChange={setIdentityPopoverOpen}>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className="w-48 justify-between">
+                {identityFilter.length > 0
+                  ? `${identityFilter.length} ${identityFilter.length === 1 ? 'Identity' : 'Identities'}`
+                  : 'Filter by identity'}
+                <IconChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-48 p-0" align="start">
+              <div className="max-h-64 overflow-auto p-2">
+                {availableIdentities.length === 0 ? (
+                  <div className="px-2 py-1.5 text-sm text-muted-foreground">
+                    No identities found
+                  </div>
+                ) : (
+                  <>
+                    {identityFilter.length > 0 && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="w-full justify-start mb-1"
+                        onClick={clearIdentityFilter}
+                      >
+                        Clear selection
+                      </Button>
+                    )}
+                    {availableIdentities.map((identity) => (
+                      <div
+                        key={identity}
+                        className="flex items-center space-x-2 px-2 py-1.5 hover:bg-accent rounded-sm cursor-pointer"
+                        onClick={() => handleIdentityToggle(identity)}
+                      >
+                        <Checkbox
+                          checked={identityFilter.includes(identity)}
+                          onCheckedChange={() => handleIdentityToggle(identity)}
+                        />
+                        <label className="text-sm cursor-pointer flex-1">
+                          {identity}
+                        </label>
+                      </div>
+                    ))}
+                  </>
+                )}
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
         <Link href="/interview-processes/create">
           <Button size="sm">

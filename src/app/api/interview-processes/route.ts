@@ -12,20 +12,40 @@ export const GET = withApiPermission(
     const pageSize = parseInt(searchParams.get("pageSize") || "10")
     const searchQuery = searchParams.get("search")
     const statusFilter = searchParams.get("status")
+    const identityFilter = searchParams.get("identity")
 
     const where: Prisma.InterviewProcessWhereInput = {}
+    const andConditions: Prisma.InterviewProcessWhereInput[] = []
 
     if (searchQuery) {
-      where.OR = [
-        { jobTitle: { contains: searchQuery, mode: "insensitive" } },
-        { company: { contains: searchQuery, mode: "insensitive" } },
-        { identity: { contains: searchQuery, mode: "insensitive" } },
-        { person: { contains: searchQuery, mode: "insensitive" } }
-      ]
+      andConditions.push({
+        OR: [
+          { jobTitle: { contains: searchQuery, mode: "insensitive" } },
+          { company: { contains: searchQuery, mode: "insensitive" } },
+          { identity: { contains: searchQuery, mode: "insensitive" } },
+          { person: { contains: searchQuery, mode: "insensitive" } }
+        ]
+      })
     }
 
     if (statusFilter) {
-      where.status = statusFilter
+      andConditions.push({ status: statusFilter })
+    }
+
+    if (identityFilter) {
+      // Support multiple identities separated by comma
+      const identities = identityFilter.split(',').map(i => i.trim()).filter(Boolean)
+      if (identities.length > 0) {
+        andConditions.push({
+          OR: identities.map(identity => ({
+            identity: { equals: identity, mode: "insensitive" as Prisma.QueryMode }
+          }))
+        })
+      }
+    }
+
+    if (andConditions.length > 0) {
+      where.AND = andConditions
     }
 
     // First get all matching records with their interview steps
