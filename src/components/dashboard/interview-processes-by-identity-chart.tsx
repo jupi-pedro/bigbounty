@@ -23,11 +23,11 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 const chartConfig = {
   inProgress: {
     label: "In Progress",
-    color: "hsl(221.2 83.2% 53.3%)", // blue
+    color: "hsl(217 91% 60%)", // lighter blue
   },
   declined: {
     label: "Declined",
-    color: "hsl(0 84% 60%)", // red
+    color: "hsl(0 70% 65%)", // softer red
   },
   withdrawn: {
     label: "Withdrawn",
@@ -35,7 +35,7 @@ const chartConfig = {
   },
   offered: {
     label: "Offered",
-    color: "hsl(142 76% 36%)", // green
+    color: "hsl(142 60% 45%)", // softer green
   },
 } satisfies ChartConfig
 
@@ -144,7 +144,12 @@ export function InterviewProcessesByIdentityChart() {
                 allowDecimals={false}
               />
               <ChartTooltip content={<ChartTooltipContent />} />
-              <Legend />
+              <Legend
+                formatter={(value) => {
+                  const key = value as keyof typeof chartConfig
+                  return chartConfig[key]?.label || value
+                }}
+              />
               <Bar
                 dataKey="inProgress"
                 fill="var(--color-inProgress)"

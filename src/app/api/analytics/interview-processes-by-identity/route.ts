@@ -32,22 +32,27 @@ export async function GET(request: NextRequest) {
         break
     }
 
-    // Fetch interview processes with optional date filter
+    // Fetch interview processes with their steps
     const interviewProcesses = await prisma.interviewProcess.findMany({
-      where: startDate ? {
-        createdAt: {
-          gte: startDate,
-        },
-      } : undefined,
       select: {
         identity: true,
         status: true,
+        interviewSteps: {
+          select: {
+            date: true,
+          },
+          orderBy: {
+            date: 'desc',
+          },
+          take: 1, // Get only the latest step
+        },
       },
     })
 
-    // Group by identity and count by status
+    // Filter by latest step date and group by identity and count by status
     const groupedData: {
-      [identity: string]: {
+      [normalizedIdentity: string]: {
+        originalIdentity: string
         inProgress: number
         declined: number
         withdrawn: number
@@ -56,8 +61,25 @@ export async function GET(request: NextRequest) {
     } = {}
 
     interviewProcesses.forEach(process => {
-      if (!groupedData[process.identity]) {
-        groupedData[process.identity] = {
+      // If there are no steps, skip this process when filtering by date
+      if (startDate && process.interviewSteps.length === 0) {
+        return
+      }
+
+      // If filtering by date, check if the latest step is within the range
+      if (startDate && process.interviewSteps.length > 0) {
+        const latestStepDate = new Date(process.interviewSteps[0].date)
+        if (latestStepDate < startDate) {
+          return
+        }
+      }
+
+      // Normalize identity to lowercase for case-insensitive grouping
+      const normalizedIdentity = process.identity.toLowerCase()
+
+      if (!groupedData[normalizedIdentity]) {
+        groupedData[normalizedIdentity] = {
+          originalIdentity: process.identity, // Keep the original casing for display
           inProgress: 0,
           declined: 0,
           withdrawn: 0,
@@ -67,23 +89,23 @@ export async function GET(request: NextRequest) {
 
       const status = process.status.toLowerCase()
       if (status === 'in progress') {
-        groupedData[process.identity].inProgress++
+        groupedData[normalizedIdentity].inProgress++
       } else if (status === 'declined') {
-        groupedData[process.identity].declined++
+        groupedData[normalizedIdentity].declined++
       } else if (status === 'withdrawn') {
-        groupedData[process.identity].withdrawn++
+        groupedData[normalizedIdentity].withdrawn++
       } else if (status === 'offered') {
-        groupedData[process.identity].offered++
+        groupedData[normalizedIdentity].offered++
       }
     })
 
     // Convert to array format for the chart
-    const chartData = Object.entries(groupedData).map(([identity, counts]) => ({
-      identity,
-      inProgress: counts.inProgress,
-      declined: counts.declined,
-      withdrawn: counts.withdrawn,
-      offered: counts.offered,
+    const chartData = Object.values(groupedData).map((data) => ({
+      identity: data.originalIdentity, // Use original casing for display
+      inProgress: data.inProgress,
+      declined: data.declined,
+      withdrawn: data.withdrawn,
+      offered: data.offered,
     }))
 
     return NextResponse.json(chartData)
