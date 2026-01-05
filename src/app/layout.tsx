@@ -1,4 +1,4 @@
-import { Geist, Geist_Mono } from "next/font/google"
+import localFont from "next/font/local"
 import "./globals.css"
 import AuthenticatedLayout from "@/components/layouts/authenticated-layout"
 import UnauthenticatedLayout from "@/components/layouts/unauthenticated-layout"
@@ -7,10 +7,15 @@ import { Metadata } from "next"
 import { Toaster } from "@/components/ui/sonner"
 import { Providers } from "@/components/providers"
 
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] })
-const geistMono = Geist_Mono({
+const geistSans = localFont({
+  src: "./fonts/GeistVF.woff2",
+  variable: "--font-geist-sans",
+  weight: "100 900",
+})
+const geistMono = localFont({
+  src: "./fonts/GeistMonoVF.woff2",
   variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: "100 900",
 })
 
 export const metadata: Metadata = {
