@@ -21,6 +21,7 @@ import {
   IconLock,
   IconUsers,
   IconUserCheck,
+  IconEyeDollar,
 } from "@tabler/icons-react"
 import Link from "next/link"
 import { getCurrentUser } from "@/lib/current-user"
@@ -42,12 +43,12 @@ export async function AppSidebar({
             <SidebarMenuButton size="lg" asChild>
               <Link href="/">
                 <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                  <IconDrone className="!size-8" />
+                  <IconEyeDollar className="!size-8" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">DroneUp Space</span>
+                  <span className="truncate font-medium">BigBounty Group</span>
                   <span className="truncate text-xs">
-                    To infinity and beyond
+                    Do or Die
                   </span>
                 </div>
               </Link>
